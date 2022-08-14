@@ -1,0 +1,201 @@
+/* MERGE */
+data a1;
+input id name $ height ;
+DATALINES;
+1 A 1
+3 B 2
+5 C 2
+7 D 2
+;
+RUN;
+
+data a2;
+input id name $ WEIGHT ;
+DATALINES;
+2 A 2
+4 B 3
+5 F 4
+7 E 5 
+9 E 2
+;
+RUN;
+
+PROC PRINT DATA=A1; RUN;
+PROC PRINT DATA=A2; RUN;
+
+
+PROC SORT DATA=A1 ; BY ID  ; RUN;
+PROC SORT DATA=A2 ; BY ID  ; RUN;
+
+/*WITHOUT BY SIMILAR TO DOUBLE SET WITH SMALL DIFFERENCE */
+DATA MRG;
+MERGE A1(IN=A)
+      A2(IN=B);
+RUN;
+
+/*FULL JOIN */
+DATA MRG1;
+MERGE A1(IN=A)
+      A2(IN=B);
+  BY ID;
+/*  X=A;*/
+/*  Y=B;*/
+RUN;
+
+PROC PRINT DATA=MRG1; RUN;
+
+/* LEFT JOIN */
+DATA MRG2 
+;
+MERGE A1(IN=A)
+      A2(IN=B);
+  BY ID;
+
+  IF A THEN OUTPUT MRG2;
+
+RUN;
+PROC PRINT DATA=MRG2; RUN;
+
+
+/*RIGHT JOIN */
+DATA MRG3 
+
+;
+MERGE A1(IN=A)
+      A2(IN=B);
+  BY ID;
+
+  IF B THEN OUTPUT;
+
+RUN;
+PROC PRINT DATA=MRG3; RUN;
+
+
+
+/*INNER JOIN */
+DATA MRG4
+;
+MERGE A1(IN=A)
+      A2(IN=B);
+  BY ID;
+
+  IF A AND B THEN OUTPUT;
+RUN;
+PROC PRINT DATA=MRG4; RUN;
+
+
+/*LEFT OUTER */
+DATA MRG5
+;
+MERGE A1(IN=A)
+      A2(IN=B);
+  BY ID;
+
+  IF A AND NOT B THEN OUTPUT;
+
+RUN;
+PROC PRINT DATA=MRG5; RUN;
+
+/*RIGHT OUTER */
+DATA MRG6
+;
+MERGE A1(IN=A)
+      A2(IN=B);
+  BY ID;
+
+  IF B AND NOT A THEN OUTPUT;
+
+RUN;
+PROC PRINT DATA=MRG6; RUN;
+
+
+DATA MRG7
+;
+MERGE A1(IN=A)
+      A2(IN=B);
+  BY ID;
+
+  IF (A AND NOT B ) OR (B AND NOT A) THEN OUTPUT;
+
+RUN;
+PROC PRINT DATA=MRG7; RUN;
+
+
+
+
+data prsn;
+input member_id name $ dob ;
+
+datalines;
+11111111 vijay 01021978
+22222222 raja  05051980
+33333333 surya 01011989
+run;
+
+proc print data=prsn; run;
+
+data claims;
+input member_id name $ dob claim_id  claim_line amount_paid 10.2;
+
+datalines;
+11111111 vijay 01021978 123456789 1 100.00
+11111111 vijay 01021978 123456789 2 50.00
+22222222 raja  05051980 732165849  1 200.00
+22222222 raja  05051980 732165849  2 100.00
+22222222 raja  05051980 732165849  3  -50.00
+44444444 rrenga  05051980 732165844  1  50.00
+
+run;
+
+
+proc print data=claims; run;
+
+proc sort data =prsn;by member_id ; run;
+proc sort data =claims;by member_id ; run;
+
+data final_both1;
+merge 
+prsn(in=a)
+claims(in=b);
+by member_id;
+run;
+proc print data=final_both1; run;
+
+
+DATA FRST;
+SET CLAIMS;
+BY MEMBER_ID;
+F_ID = FIRST.MEMBER_ID;
+L_ID = LAST.MEMBER_ID;
+IF NOT FIRST.MEMBER_ID AND NOT LAST.MEMBER_ID THEN OUTPUT;
+RUN;
+
+proc print data=FRST; run;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

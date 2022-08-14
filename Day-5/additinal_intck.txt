@@ -1,0 +1,34 @@
+data temp2;
+hours=intck('hour','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
+minutes=intck('minute','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
+seconds=intck('second','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
+run;
+
+proc print noobs;
+run;
+
+data temp3;
+hours=intck('hour','12:00:00't, '23:05:00't);
+minutes=intck('minute','12:00:00't,'23:05:00't);
+seconds=intck('second','12:00:00't,'23:05:00't);
+run;
+proc print noobs;
+run;
+*In this case, saturday and sunday are considered weekends and excluding from the calculation;
+data eg1;
+weekdays = intck('WEEKDAY', '11DEC2016'd ,'18DEC2016'd);
+run;
+proc print;
+run;
+*WEEKDAY1W implies sunday as weekend (1=Sunday, 2= MONDAY... 7=Saturday);
+data eg2;
+weekdays = intck('WEEKDAY1W', '11DEC2016'd ,'18DEC2016'd);
+run;
+proc print;
+run;
+*WEEKDAY24W means MONDAY and WEDNESDAY are weekends;
+data eg3;
+weekdays = intck('WEEKDAY24W', '11DEC2016'd ,'16DEC2016'd);
+run;
+proc print;
+run;

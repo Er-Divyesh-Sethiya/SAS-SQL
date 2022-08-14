@@ -1,0 +1,77 @@
+/*
+PROC SQL views are not separate copies of data, they are referred to as virtual tables. 
+They do not exist as independent entities like real tables.
+
+The view contains only the logic for accessing the data, not the data itself.
+
+
+*/
+data work.payrollmaster;
+input empid jobcode $ salary;
+datalines;
+111 PT1 10000
+112 PT2 20000
+113 PT3 30000
+114 PT4 40000
+115 PT1 10000
+116 PT2 20000
+117 PT3 30000
+118 PT4 40000
+118 PT2 30000
+120 PT4 40000
+run;
+/*Creating a PROC SQL View*/
+proc sql;
+create view work.raisev as
+select empid, jobcode,
+salary format=dollar12.2,
+salary/12 as MonthlySalary
+format=dollar12.
+from payrollmaster;
+quit;
+
+/*Displaying the Definition for a PROC SQL View*/
+proc sql;
+describe view work.raisev;
+quit;
+
+/*Using a PROC SQL View in a Query*/
+proc sql;
+select *
+from work.raisev
+where jobcode in ('PT2','PT3');
+quit;
+
+/*Updating a PROC SQL View*/
+proc sql;
+update work.raisev
+set salary=salary * 1.20
+where jobcode='PT3';
+quit;
+
+/*Dropping a PROC SQL View*/
+proc sql;
+drop view work.raisev;
+quit;
+
+data one1;
+a=1;
+run;
+
+data one2;
+a=2;
+run;
+
+proc sql;
+create view work.one as
+select a from one1
+union
+select a from one2
+;
+quit;
+
+
+
+
+
+

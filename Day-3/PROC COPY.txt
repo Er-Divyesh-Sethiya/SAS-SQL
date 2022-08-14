@@ -1,0 +1,30 @@
+libname sashelp '/pbr/sfw/sas/940/SASFoundation/9.4/nls/u8/sashelp';
+libname new '/home/u36424593/Train';
+proc copy in=sashelp out=new;
+select class;
+run;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

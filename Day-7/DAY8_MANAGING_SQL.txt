@@ -1,0 +1,64 @@
+proc sql inobs=5;
+select *
+from SASHELP.CLASS;
+QUIT;
+
+proc sql inobs=3;
+select *
+from SASHELP.CLASS;
+QUIT;
+
+proc sql inobs=5 NUMBER;
+select *
+from SASHELP.CLASS;
+QUIT;
+proc sql inobs=5 NONUMBER;
+select *
+from SASHELP.CLASS;
+QUIT;
+
+proc sql inobs=5 DOUBLE;
+select *
+from SASHELP.CLASS;
+QUIT;
+
+proc sql inobs=5 NODOUBLE;
+select *
+from SASHELP.CLASS;
+QUIT;
+
+
+proc sql inobs=5 flow=10 15;
+select *
+from SASHELP.CLASS;
+QUIT;
+
+
+proc options option=stimer value;
+run;
+
+
+proc sql inobs=5 stimer;
+select *
+from SASHELP.CLASS;
+QUIT;
+
+
+proc sql OUTobs=5 ;
+select *
+from SASHELP.CLASS;
+reset OUTOBS;
+select *
+from SASHELP.CLASS 
+WHERE SEX='M';
+QUIT;
+
+proc sql;
+describe table dictionary.tables;
+QUIT;
+
+proc sql;
+select memname format=$20., nobs, nvar, crdate
+from dictionary.tables
+where libname='SASUSER';
+QUIT;

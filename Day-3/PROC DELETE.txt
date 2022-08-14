@@ -1,0 +1,13 @@
+LIBNAME MyLib '/home/u36424593/Train';
+
+DATA MyLib.CLASS(COMPRESS=YES);
+SET SASHELP.CLASS;
+RUN;
+
+proc delete lib=MyLib data=CLASS ;
+run;
+
+
+proc datasets library= cpy KILL;
+run;
+quit;

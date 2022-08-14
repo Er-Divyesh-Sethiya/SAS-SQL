@@ -1,0 +1,73 @@
+
+data crc;
+input ovr x y;
+datalines;
+10 50 60
+20 100 105
+30 160 165
+40 220 210
+50 290 282
+;
+run;
+
+proc chart data = crc;
+pie y ;
+run;
+
+proc plot data = crc;
+plot ovr*x='*' ;
+run;
+
+proc plot data = crc;
+plot ovr*x='*' 
+    ovr*y='%' / overlay;
+run;
+
+/*PIE - SGRENDER*/
+
+PROC SQL;
+create table CARS1 as
+SELECT make, model, type, invoice, horsepower, length, weight
+ FROM 
+SASHELP.CARS
+WHERE make in ('Audi','BMW')
+;
+RUN;
+
+PROC TEMPLATE;
+   DEFINE STATGRAPH pie;
+      BEGINGRAPH;
+         LAYOUT REGION;
+            PIECHART CATEGORY = type /
+            DATALABELLOCATION = OUTSIDE
+            CATEGORYDIRECTION = CLOCKWISE
+            START = 180 NAME = 'pie';
+            DISCRETELEGEND 'pie' /
+            TITLE = 'Car Types';
+         ENDLAYOUT;
+      ENDGRAPH;
+   END;
+RUN;
+PROC SGRENDER DATA = cars1
+            TEMPLATE = pie;
+RUN;
+
+PROC TEMPLATE;
+   DEFINE STATGRAPH pie;
+      BEGINGRAPH;
+         LAYOUT REGION;
+            PIECHART CATEGORY = type /
+            DATALABELLOCATION = INSIDE
+            DATALABELCONTENT = ALL
+            CATEGORYDIRECTION = CLOCKWISE
+            DATASKIN = SHEEN 
+            START = 180 NAME = 'pie';
+            DISCRETELEGEND 'pie' /
+            TITLE = 'Car Types';
+         ENDLAYOUT;
+      ENDGRAPH;
+   END;
+RUN;
+PROC SGRENDER DATA = cars1
+            TEMPLATE = pie;
+RUN;

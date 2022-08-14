@@ -1,0 +1,44 @@
+libname mm '/home/u36424593/Train';
+ 
+
+data file1;
+infile '/home/u36424593/Files/bank_new.txt' dlm=',';
+input id amount;
+run;
+
+data bnk;
+set mm.bank;
+run;
+
+proc sort data=file1; by id;run;
+proc sort data=bnk; by id;run;
+
+data  both onlyb;
+merge bnk(in=a)
+file1(in=b);
+by id;
+
+if a and b then output both;
+if b and not a then output onlyb;
+
+run;
+
+
+
+PROC EXPORT 
+   DATA= work.both
+   OUTFILE= "/home/u36424593/Train/both.XLS"
+   DBMS=XLS
+   REPLACE;
+   SHEET="inboth";
+RUN;
+
+
+PROC EXPORT 
+   DATA= work.onlyb
+   OUTFILE= "/home/u36424593/Train/onlyb.XLS"
+   DBMS=XLS
+   REPLACE;
+   SHEET="infile";
+RUN;
+

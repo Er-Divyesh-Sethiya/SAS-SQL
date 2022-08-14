@@ -1,0 +1,53 @@
+/*BAR ON UNIVARIATE */
+proc univariate data = sashelp.cars;
+   histogram horsepower
+   / midpoints = 176 to 350 by 50;
+run;
+/*BAR AND WAVE ON UNIVARIATE */
+proc univariate data = sashelp.cars noprint;
+histogram horsepower
+/ 
+normal ( 
+   mu = est
+   sigma = est
+   color = blue
+   w = 2.5 
+)
+barlabel = percent
+midpoints = 70 to 550 by 50;
+run;
+
+
+
+
+/*Linear Regression */
+
+PROC SQL;
+create table CARS1 as
+SELECT invoice, horsepower, length, weight
+   FROM 
+   SASHELP.CARS
+   WHERE make in ('Audi','BMW')
+;
+RUN;
+proc reg data = cars1;
+model horsepower = weight ;
+run;
+
+/*CORRELATION*/
+proc corr data=CARS1 plots=matrix(histogram);
+run;
+
+/*ANNOVA*/
+
+/*ANOVA stands for Analysis of Variance*/
+PROC ANOVA DATA = SASHELP.CARS;
+CLASS type;
+MODEL horsepower = type;
+RUN;
+
+PROC ANOVA DATA = SASHELP.CARS;
+CLASS type;
+MODEL horsepower = type;
+MEANS type / tukey lines;
+RUN;

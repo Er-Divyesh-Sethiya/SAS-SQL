@@ -1,0 +1,329 @@
+/*delimiter*/
+
+DAta delim;
+infile '/home/u36424593/Files/dlm1.txt'   dlm=',';
+input name $ age dist $ ;
+run;
+
+proc print data=delim; run;
+
+DAta delim2;
+infile '/home/u36424593/Files/dlm2.txt'   dlm='$';
+input name $ age dist $ ;
+run;
+
+proc print data=delim2; run;
+
+DAta delim1;
+infile '/home/u36424593/Files/dlm.txt'   dlm=',' DSD;
+input id name $ ;
+run;
+
+proc print data=delim1; run;
+
+DAta sing_multi;
+infile '/home/u36424593/Files/sin_multi.txt' ;
+input team_nm1 $ city1 $  team_nm2 $ city2 $  team_nm3 $ city3 $  ;
+run;
+
+
+DAta sing_multi;
+infile '/home/u36424593/Files/sin_multi.txt' ;
+input team_nm $ city $ @@;
+run;
+
+proc print data=sing_multi; run;
+
+DAta sing_multi1;
+infile '/home/u36424593/Files/single_multi1.txt' ;
+input  mobno name $ licplan licopt @@;
+run;
+
+proc print data=sing_multi1; run;
+
+DAta single;
+infile '/home/u36424593/Files/single.txt' ;
+input id txt $;
+run;
+
+proc print data=single; run;
+
+DAta single;
+infile '/home/u36424593/Files/single.txt' ;
+input id $  @;
+if id = '1' then do;
+   input txt $ ;
+  output;
+end;
+else c=1;
+run;
+
+proc print data=single; run;
+
+
+/*Mark2 and Mark3 greater than 62 alone needed only then i need Mark4 and Mark5*/
+
+Data single1;
+infile '/home/u36424593/Files/Single_trailing.txt' ;
+input Empid  Name $ Mark1 Mark2 Mark3 @;
+if Mark2 GT 62 and Mark3 GT 62 then do;
+    input mark4 mark5;
+end;
+else do;
+  key='less than or equal to 62';
+end;
+run;
+
+proc print data=single1; run;
+
+DAta multi;
+infile '/home/u36424593/Files/mutli_line.txt' ;
+input  name $
+#2 ph_nm
+#4 text $
+/ city $
+;
+run;
+
+proc print data=multi; run;
+
+DAta multi11;
+infile '/home/u36424593/Files/mutli_line.txt' ;
+input  name $
+/ ph_nm
+#4 text $
+#5 city $
+;
+run;
+
+proc print data=multi11; run;
+
+
+
+/*Day2 - SET*/
+
+
+data A1;
+input id name $ height;
+datalines;
+1 A 5
+3 B 6
+5 C 7
+;
+RUN;
+
+PROC PRINT DATA=A1;RUN;
+
+data A2;
+input id name $ WEIGHT;
+datalines;
+2 E 50
+4 F 60
+5 G 70
+7 H 50
+;
+RUN;
+
+PROC PRINT DATA=A2;RUN;
+
+/* Take copy of dataset */
+
+data n1 ;
+set a1;
+run;
+PROC PRINT DATA=n1;RUN; 
+
+/* TCreating new dataset with additional fields based on certian condition  */
+
+data n11 ;
+set a1;
+if id =1 then bonus=100 ;
+else bonus =0;
+run;
+
+* Difference between IF, IF, IF and IF ,ELSE IF , ELSE IF , ELSE ;
+Data condck;
+infile '/home/u36424593/Files/rank.txt';
+input rank name $;
+run;
+
+data final1;
+set condck;
+if rank gt 5 and rank lt 15 then level= 2;
+if rank le 5  then level= 1;
+if rank ge 15 then level= 3;
+
+run;
+data final2;
+set condck;
+if rank gt 5 and rank lt 15 then level= 2;
+else if rank le 5  then level= 1;
+else if rank ge 15 then level= 3;
+
+run;
+
+
+*SET ;
+
+/* CONDITIONAL OPERATOR
+EQ =
+NE !=
+GT >
+GE >=
+LT <
+LE <=
+*/
+
+*CREATING 'N' DATASET;
+
+DATA NEW1(KEEP=ID ) NEW2(DROP=NAME) NEW3 ;
+
+SET A1(KEEP=ID HEIGHT);
+
+IF HEIGHT GT 5 THEN OUTPUT NEW1;
+ELSE IF HEIGHT EQ 5 THEN OUTPUT NEW2;
+ELSE OUTPUT NEW3;
+
+RUN;
+PROC PRINT DATA=NEW1;RUN;
+PROC PRINT DATA=NEW2;RUN;
+PROC PRINT DATA=NEW3;RUN;
+
+
+DATA NEW1  ;
+SET A1;
+IF HEIGHT GT 5 THEN do;
+	if name = 'B' then do;
+      new_name= 'Brindha'; 
+      exp= 3;	   
+	end;
+	else new_name= 'Jaya';
+end;
+RUN;
+proc print data=new1;run;
+
+DATA OBSLC;
+SET A1 A1 A1;
+RUN;
+proc print data=OBSLC; run;
+
+DATA SLCT;
+SET OBSLC(OBS=6);
+RUN;
+proc print data=SLCT; run;
+
+DATA SLCT1;
+SET OBSLC(firstobs=4 OBS=6);
+RUN;
+
+proc print data=slct; run;
+
+DATA SLCT1;
+SET OBSLC(RENAME=(HEIGHT=TALL id=empid));
+RUN;
+proc print data=slct1; run;
+
+DATA SLCT2(RENAME=(HEIGHT=TALL));
+SET OBSLC;
+RUN;
+proc print data=slct2; run;
+
+DATA SLCT3;
+SET OBSLC(keep=ID); 
+IF  trns  gt 5 THEN DO;
+fine_amt=25;
+message='limit crossed penalty';
+END;
+
+RUN;
+PROC PRINT DATA=SLCT3; RUN;
+
+DATA A_APPEND;
+SET A1 A2;
+RUN;
+PROC PRINT DATA=A_APPEND; RUN;
+
+
+DATA A_APPEND1;
+SET A1 A2;
+BY id ; /* INTERLEAVING */
+RUN;
+
+PROC PRINT DATA=A_APPEND1; RUN;
+
+PROC SORT DATA=OBSLC; BY ID;RUN;
+
+
+
+DATA ONE ONE1 ONE11;
+INPUT ID NAME $;
+DATALINES;
+1 naveen
+1 PRABHA
+3 RAMESH
+1 PRABHA
+3 BABU
+2 RAJ
+;
+RUN;
+PROC PRINT DATA=ONE; RUN;
+
+PROC SORT DATA=ONE ;BY ID;RUN;
+PROC PRINT DATA=ONE; RUN;
+
+PROC SORT DATA=ONE NODUPS;BY id;RUN;
+PROC PRINT DATA=ONE; RUN;
+
+PROC SORT DATA=ONE1 NODUPKEY;BY ID;RUN;
+PROC PRINT DATA=ONE1; RUN;
+
+
+PROC SORT DATA=ONE11 NODUPKEY OUT=ONE11_1  dupout= ONE11_2;BY ID;RUN;
+
+PROC PRINT DATA=ONE11_1; RUN;
+PROC PRINT DATA=ONE11_2; RUN;
+
+DATA NEW;
+INPUT ID NAME $;
+DATALINE;
+3 Y
+3 Z
+1 A
+1 C
+1 B
+2 H
+
+;
+RUN;
+
+
+PROC SORT DATA= NEW OUT= NEW1; BY ID ; RUN;
+PROC SORT DATA= NEW OUT =NEW2; BY ID  NAME ; RUN;
+PROC SORT DATA= NEW OUT =NEW3; BY ID  DESCENDING NAME ; RUN;
+
+DATA A_APPEND2;
+SET A1;
+SET A2;
+RUN;
+
+PROC PRINT DATA=A_APPEND2; RUN;
+
+data new;
+set A1 a2;
+run;
+
+PROC APPEND BASE=A1 DATA=A2 FORCE ; RUN;
+
+PROC PRINT DATA=A1; RUN;
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,141 @@
+
+data one;
+input X A $;
+datalines;
+1 a
+1 a
+1 b
+2 c
+3 v
+3 v
+4 e
+6 g
+;
+run;
+data two;
+input X B $;
+datalines;
+1 x
+1 a
+2 y
+3 z
+3 v
+3 v
+5 w
+;
+run;
+
+/* EXCEPT */
+proc sql;
+select * from one
+except 
+select * from two;
+quit;
+
+
+proc sql;
+select * from one
+except all
+select * from two;
+quit;
+
+proc sql;
+select * from one
+except  corr
+select * from two;
+quit;
+
+
+proc sql;
+select * from one
+except all corr
+select * from two;
+quit;
+
+
+
+/*intersect ,
+a11 -duplicates will come only if the row is availavble in both the table 
+*/
+
+proc sql;
+select * from one
+intersect 
+select * from two;
+quit;
+
+
+proc sql;
+select * from one
+intersect all   
+select * from two;
+quit;
+
+proc sql;
+select * from one
+intersect  corr
+select * from two;
+quit;
+
+
+proc sql;
+select * from one
+intersect all corr
+select * from two;
+quit;
+
+
+
+/*union */
+
+
+proc sql;
+select * from one
+union 
+select * from two;
+quit;
+
+
+proc sql;
+select * from one
+union all   
+select * from two;
+quit;
+
+proc sql;
+select * from one
+union  corr
+select * from two;
+quit;
+
+
+proc sql;
+select * from one
+union all corr
+select * from two;
+quit;
+
+
+/* outer union */
+
+proc sql;
+select * from one
+outer union 
+select * from two;
+quit;
+
+
+proc sql;
+select * from one
+outer union   corr
+select * from two;
+quit;
+
+
+
+
+
+
+
+
+

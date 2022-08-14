@@ -1,0 +1,35 @@
+                                               /*   IMPORT  */
+PROC IMPORT 
+DATAFILE="/home/u36424593/Files/CLAIMS.xlsx"
+OUT=claim
+DBMS=xlsx 
+  REPLACE;
+  SHEET="sheet1";
+  GETNAMES=YES; 
+  DATAROW=N;
+/*   RANGE="range-name"; */
+RUN;
+
+LIBNAME IMP  '/home/u36424593/Train';
+
+PROC IMPORT 
+DATAFILE="/home/u36424593/Files/CLAIMS.xlsx"
+OUT=IMP.claim1
+DBMS=xlsx 
+  REPLACE;
+  SHEET="DECCLAIM";
+  GETNAMES=NO; 
+  DATAROW=5;
+  /*RANGE='Sheet1$B2:C20';*/
+RUN;
+/* https://www.listendata.com/2013/09/importing-excel-data-into-sas.html */
+   /*   EXPORT  */
+PROC EXPORT 
+   DATA= IMP.claim1
+   OUTFILE= "/home/u36424593/TEMP/EXPCLAIM.XLS"
+   DBMS=XLS
+   REPLACE;
+   SHEET=“EXPCLAIM";
+RUN;
+
+

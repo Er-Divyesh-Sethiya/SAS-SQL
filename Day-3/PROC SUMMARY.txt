@@ -1,0 +1,38 @@
+proc summary data=sashelp.shoes;
+  types region
+        region*subsidiary;
+class region subsidiary;
+var   stores sales returns;
+output out=total_stores n(stores)=
+
+                     sum(stores)=
+
+         / autoname autolabel;
+
+ 
+
+output out=sales_analysis
+
+            n(sales returns)=
+
+            mean(sales returns)=
+
+            std(sales returns)=  
+
+            min(sales returns)=
+
+            max(sales returns)=
+
+         / autoname autolabel;
+
+ 
+
+run;
+
+ 
+
+ 
+
+ 
+
+ 

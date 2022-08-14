@@ -1,0 +1,45 @@
+
+
+
+libname lib 'E:\sas_dev\raw';
+
+/*data lib.all(compress=yes);*/
+/*set sashelp.class;*/
+/*run;*/
+
+proc freq data=lib.all;
+table age/nocum norow nocol;
+run;
+
+proc freq data=sashelp.class;
+table age*sex/nocum norow nocol nopercent;
+run;
+
+proc freq data=sashelp.class;
+table age*sex/list;
+run;
+
+proc freq data=sashelp.class;
+table age*(height  weight);
+run;
+
+proc freq data=sashelp.class;
+table age*sex/out=new;
+run;
+
+proc freq data=sashelp.class;
+table age*sex/chisq;
+run;
+ods graphics on;
+proc freq data=sashelp.class order =freq;
+tables age/plots=freqplot(type=dot);
+run;
+ods graphics off;
+
+
+
+
+
+
+
+

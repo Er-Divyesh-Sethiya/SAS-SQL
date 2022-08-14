@@ -1,0 +1,245 @@
+/* DO- The loop continues from the start value till the stop value of the index variable. */
+DATA MYDATA1;
+SUM = 0;
+DO VAR = 1 to 5  by 2;
+   SUM = SUM+VAR;
+   output;
+END;
+run;
+
+PROC PRINT DATA = MYDATA1;
+RUN;
+
+data mydata11;
+   do i = 1 to 80 by 20;
+      do j = 1 to ceil(num_students/4);
+         set sashelp.class nobs=num_students; 
+OUTPUT;
+      end;
+   end;
+run;
+
+data students;
+do i = 1 to 10 by 2;
+   loop = 'outerloop';
+   do j= 1 to 2;
+    loop1= 'innerloop';
+    output;
+   end;
+end;
+run;
+/*DO WHILE- This DO WHILE loop uses a WHILE condition. The SAS statements are repeatedly executed until the while condition becomes false. */
+DATA MYDATA;
+SUM = 0;
+VAR = 1;
+DO WHILE(VAR<6) ;
+   SUM = SUM+VAR;
+   VAR+1;
+   output;
+END;
+run;
+   PROC PRINT;
+   RUN;
+/*DO UNTIL - The DO UNTIL loop uses a UNTIL condition. The SAS statements are repeatedly executed till the UNTIL condition becomes TRUE. */
+DATA MYDATA;
+SUM = 0;
+VAR = 1;
+DO UNTIL(VAR>5);
+   SUM = SUM+VAR;
+   VAR+1;
+   output;
+END;
+run;
+   PROC PRINT;
+   RUN;
+
+data LEAV;
+do i= 1 to 10;
+c= i+ 1;
+output;
+ if i eq 5 then LEAVE;
+
+end;
+
+run;
+
+data CNT;
+do i= 1 to 10;
+c= i+ 1;
+output;
+ if i eq 5 then CONTINUE;
+
+end;
+run;
+
+data STP;
+do i= 1 to 10;
+c= i+ 1;
+output;
+ if i eq 5 then STOP;
+
+end;
+run;
+
+
+data ABT;
+do i= 1 to 10;
+c= i+ 1;
+output;
+ if i eq 5 then ABORT;
+
+end;
+run;
+
+
+ 
+ /*GOTO:*/
+data info;   
+   input x;
+   if 1<=x<=5 then goto add;
+   put x=;
+/*    return;  */
+   add: sumx+x;
+   datalines;
+7
+3
+323
+;
+run;
+
+/*LINK:*/
+
+data hydro;
+   input type $ depth station $;
+      /* link to label calcu: */
+   if type ='aluv' then link calcu; 
+   date=today();
+      /* return to top of step */
+   return;                         
+   calcu: if station='site_1' 
+      then elevatn=6650-depth;
+   else if station='site_2' 
+      then elevatn=5500-depth;
+         /* return to date=today(); */
+   return;                           
+   datalines;
+aluv 523 site_1
+uppa 234 site_2
+aluv 666 site_2
+;
+run;
+
+
+# Declare an array of length 5 named AGE with values.
+ARRAY AGE[5] (12 18 5 62 44);
+
+# Declare an array of length 5 named COUNTRIES with values starting at index 0.
+ARRAY COUNTRIES(0:8) A B C D E F G H I;
+
+# Declare an array of length 5 named QUESTS which contain character values.
+ARRAY QUESTS(1:5) $ Q1-Q5;
+
+# Declare an array of required length as per the number of values supplied.
+ARRAY ANSWER(*) A1-A100;
+
+DATA array_example;
+INPUT a1 $ a2 $ a3 $ a4 $ a5 $;
+ARRAY colours(5) $ a1-a5;
+mix = a1||'+'||a2;
+DATALINES;
+yello pink orange green blue
+;
+RUN;
+PROC PRINT DATA = array_example;
+RUN;
+
+/*The OF operator is used when analysing the data forma an Array to perform calculations on the entire row of an array. In the below example we apply the Sum and Mean of values in each row.*/
+
+DATA array_example_OF;
+   INPUT A1 A2 A3 A4;
+   ARRAY A(4) A1-A4;
+   A_SUM = SUM(OF A(*));
+   A_MEAN = MEAN(OF A(*));
+   A_MIN = MIN(OF A(*));
+   DATALINES;
+   21 4 52 11
+   96 25 42 6
+   ;
+RUN;
+   PROC PRINT DATA = array_example_OF;
+   RUN;
+/*IN OPERATOR*/
+
+DATA array_in_example;
+   INPUT A1 $ A2 $ A3 $ A4 $;
+   ARRAY COLOURS(4) A1-A4;
+   IF 'yellow' IN COLOURS THEN available = 'Yes';ELSE available = 'No';
+   DATALINES;
+   Orange pink violet yelow
+   ;
+RUN;
+   PROC PRINT DATA = array_in_example;
+   RUN;
+
+
+data ck;
+input a $ b $ c $;
+datalines;
+sas base advance
+sql base advance
+bigdata old new
+;
+run;
+
+proc print data= ck; run;
+
+data new(rename=(z=certification));
+set ck;
+array x(2) b c;
+do i = 1 to 2;
+z=x(i)  ;
+output;
+end;
+keep a z;
+run;
+proc print data =new;run;
+
+
+
+data text;
+   array names{*} $ n1-n10;
+   array capitals{*} $ c1-c10;
+   input names{*};
+      do i=1 to 10;
+         capitals{i}=upcase(names{i});
+      end;
+   datalines;
+smithers michaels gonzalez hurth frank bleigh rounder joseph peters sam
+;
+proc print data=text;
+   title 'Names Changed from Lowercase to Uppercase';
+run;
+
+
+
+/* DO AND TRANS */
+data selva;
+new ='TRY MAA BLR';
+do i =1 to 3;
+var=scan(new,i,' ');
+output;
+end;
+run;
+
+PROC TRANSPOSE DATA=selva OUT=selva1 label=labelname
+    prefix=Var_;
+    BY new;
+    ID i;    
+    VAR var;
+RUN;
+proc print data =selva1 ; run;
+
+
+
+
+

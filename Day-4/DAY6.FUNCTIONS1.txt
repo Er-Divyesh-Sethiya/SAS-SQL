@@ -1,0 +1,81 @@
+DATA NEW;
+INPUT ID NAME $ ;
+/* IF MISSING(NAME ) THEN NAME = 'B'; */
+IF NOT MISSING(NAME ) THEN NAME = 'X';
+DATALINE;
+3 Y
+3 .
+1 .
+1 C
+1 B
+2 H
+
+;
+RUN;
+
+data functs;
+
+c1='y&ou *ar/e            a goo1d* p2ers%on';
+dt=01012019;
+g='VVvijay mmNNm  ';
+g1=' kumaJr';
+g2='    thank    you  ';
+nm='Mr.Prabhakar';
+
+a=input(dt,mmddyy8.);
+format a yymmdd10;
+
+b=put(dt,$char10.);
+
+fun1=compbl(c1); 
+func2=compress(c1,' /*%$');
+func2=compress(c1,,'kd');  /*ka kd kad*/
+
+fun3=left(g1);
+fun4=trim(g);
+fun5=compbl( strip(g2) ) ;
+fun6=left(trim(g2));
+
+fn7=upcase(g2);
+fn8=lowcase(g1);
+fn9=propcase(g2);
+
+tn='Tomorrow +is the election result day20190707';
+fn9=substr(tn,17,8);
+substr(tn,17,8)= 'abc';
+
+x1=length(tn)-7;
+
+fn10=substr(tn, length(tn)-7,8);
+
+x2=scan(tn,1 ,'2');
+x2=scan(tn,-2 ,'e');
+
+g='VVvijay mmNNm  ';
+g1=' kumaJr';
+
+x=g||g1;
+x1=cat(g,g1);
+x2=catt(g,g1);
+x3=cats(g,g1);
+x4=catx('***',g,g1);
+
+RUN;
+
+PROC PRINT DATA=FUNCTS;RUN;
+
+/*example to relate SUBST function to relate how it works dynamically using lenght function */
+DATA FIN;
+INPUT NM $CHAR50.;
+DATALINES;
+Tomorrow +is the election result day20190707
+Tomorrow  result day20190707
+Tomorrow     result day20190707
+;
+RUN;
+
+DATA FIN1;
+SET FIN;
+X=SUBSTR(NM,length(NM)-7,8);
+x2=scan(nm,-1 ,'y');
+RUN;

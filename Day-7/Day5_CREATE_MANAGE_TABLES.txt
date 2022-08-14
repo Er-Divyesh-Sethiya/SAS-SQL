@@ -1,0 +1,240 @@
+libname ll '/home/u36424593/Train';
+
+PROC SQL;
+create table work.discount
+(Destination char(3),
+BeginDate num Format=date9.,
+EndDate num format=date9.,
+Discount num);
+
+describe table work.discount;
+
+QUIT;
+
+/* EMPTY TABLE */
+PROC SQL;
+create table work.flightdelays2
+like sashelp.airline;
+QUIT;
+
+LIBNAME NN '/home/u36424593/Train';
+PROC SQL;
+create table work.ticketagents as
+select *
+from NN.SALARY
+;
+QUIT;
+
+data ticketagents;
+set nn.salary;
+run;
+
+
+PROC SQL;
+create table work.departments
+(Dept varchar(20) label='Department',
+Code integer label='Dept Code',
+Manager varchar(20),
+AuditDate num format=date9.);
+QUIT;
+
+PROC SQL;
+create table FLIGHTDELAYS( bufsize=8192 )
+(
+Date num format=DATE9. informat=DATE9.,
+FlightNumber char(3),
+Origin char(3),
+Destination char(3),
+DelayCategory char(15),
+DestinationType char(15),
+DayOfWeek num,
+Delay num
+);
+QUIT;
+
+PROC SQL;
+insert into work.discount
+
+set destination='LHR',
+begindate='01MAR2000'd,
+enddate='05MAR2000'd,
+discount=.33
+
+set destination='CPH',
+begindate='03MAR2000'd,
+enddate='10MAR2000'd,
+discount=.15;
+
+QUIT;
+
+proc print data=discount;run;
+
+PROC SQL;
+
+insert into work.discount (destination,
+begindate,enddate,discount)
+
+values ('LHP','01MAR2000'd,
+'05MAR2000'd,.33)
+
+values ('CPP','03MAR2000'd,
+'10MAR2000'd,.15);
+
+QUIT;
+
+proc print data=discount;run;
+
+
+PROC SQL;
+insert into work.discount (destination,
+begindate,enddate,discount)
+values ('ORD','05MAR2000'd,'15MAR2000'd,.25)
+values ('YYZ','06MAR2000'd,'20MAR2000'd,.10);
+select *
+from work.discount;
+QUIT;
+
+PROC SQL;
+create table work.employees
+(ID char (5) primary key,
+Name char(10),
+Gender char(1) not null check(gender in ('M','F')),
+HDate date label='Hire Date');
+QUIT;
+
+proc sql;
+
+create table work.discount3
+(Destination char(3),
+BeginDate num Format=date9.,
+EndDate num format=date9.,
+Discount num,
+constraint ok_discount check (discount le .5),
+constraint notnull_dest not null(destination));
+
+quit;
+
+proc sql;
+insert into work.discount3
+values('CDG','03MAR2000'd,'10MAR2000'd,.15)
+values('LHR','10MAR2000'd,'12MAR2000'd,.55);
+quit;
+
+
+PROC SQL;
+create table work.payrollmaster_new( bufsize=8192 )
+(
+gender char(15),
+age num,
+salary num,
+jobcode char(3)
+);
+QUIT;
+
+proc sql;
+insert into work.payrollmaster_new
+values('M',54,120000,'421')
+values('M',55,120000,'442')
+values('M',56,120000,'423')
+values('F',54,110000,'421')
+values('F',55,110000,'422')
+values('F',56,110000,'424')
+;
+quit;
+
+/* UPDATE */
+
+/* DATA payrollmaster_new;  */
+/* SET LL.payrollmaster_new; */
+/* RUN; */
+
+proc sql;
+update work.payrollmaster_new
+set salary=salary*1.05
+where GENDER = 'M';
+QUIT;
+
+proc print data=work.payrollmaster_new;run;
+
+PROC SQL;
+SELECT * FROM work.payrollmaster_new;
+QUIT;
+
+
+proc sql;
+update work.payrollmaster_new
+set salary=salary*
+case
+when substr(jobcode,3,1)='1'
+then 1.05
+when substr(jobcode,3,1)='2'
+then 1.10
+when substr(jobcode,3,1)='3'
+then 1.15
+else 1.08
+end;
+quit;
+
+proc sql;
+update work.payrollmaster_new
+set salary=salary*
+case substr(jobcode,3,1)
+when '1'
+then 1.05
+when '2'
+then 1.10
+when '3'
+then 1.15
+else 1.08
+end;
+QUIT;
+
+/*DELETE*/
+PROC PRINT DATA=payrollmaster_new; RUN;
+
+proc sql;
+delete from work.payrollmaster_new
+where salary <= 120000;
+QUIT;
+
+/* IF SALARY LE 120000 THEN DELETE; */
+
+/*ALTER*/
+
+proc sql;
+alter table work.payrollmaster_new
+add Bonus num format=comma10.2,
+Level char(3);
+QUIT;
+
+proc sql;
+alter table work.payrollmaster_new
+drop AGE;
+QUIT;
+
+proc sql;
+alter table work.payrollmaster_new
+modify salary format=dollar11.2 label="Salary Amt";
+QUIT;
+
+/* DROP */
+ 
+proc sql;
+drop table work.payrollmaster_new;
+quit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

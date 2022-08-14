@@ -1,0 +1,17 @@
+proc delete data = libref.dataname;
+run;
+
+proc sql;
+  drop table libref.dataname;
+quit;
+
+proc datasets library = libref;
+  delete dataname;
+run;
+
+data _null_;
+  length dd $8;
+  rc = filename(dd,cats(pathname('libref'),'\dataname.sas7bdat'));
+  rc = fdelete(dd);
+  put _all_;
+run;

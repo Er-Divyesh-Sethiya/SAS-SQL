@@ -1,0 +1,50 @@
+data vald;
+input name $ dob $ amount;
+datalines;
+Bala  19900103  100
+Vijay 19600101  200
+rahim 19600102  200
+joseph 19591101 50
+nagaraj 20190927 60
+;
+run;
+
+proc print data=vald; run;
+
+/* DATE https://documentation.sas.com/?cdcId=vdmmlcdc&cdcVersion=8.1&docsetId=ds2pg&docsetTarget=p0bz5detpfj01qn1kz2in7xymkdl.htm&locale=en  
+*/
+data nk;
+set vald;
+* char to numeric;
+ndob=input(dob,yymmdd8.);
+format ndob monyy7.;
+format ndob date9.;
+format ndob year4.;
+format ndob yymmdd10.;
+format ndob yymmdds10.;
+* num to char;
+camt=put(amount , $4.);
+run;
+
+proc print data=nk; run;
+
+proc means data=nk sum;
+class ndob;
+var amount;
+where name='Vijay';
+format ndob mmddyy10.;
+run;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

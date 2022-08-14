@@ -1,0 +1,37 @@
+/* options obs = 10; */
+/* proc print data = sashelp.cars (obs=14); */
+/* run; */
+data final; 
+input id dept $ date $char8.;
+length dept $4.;
+datalines;
+1 cub 20200201
+1 axis 20200101
+1 hdfc 20200301
+;
+run;
+data new1;
+set final;
+trsn_dt= input(date,yymmdd8.);
+format trsn_dt monyy7.;
+run;
+
+PROC SORT DATA=new1; BY DESCENDING date ; RUN ;
+
+PROC SORT DATA=new1; BY  id ; RUN ;
+data final1;
+set new1;
+by id;
+if  first.id then output;
+run;
+
+
+
+PROC SORT DATA=new1 out=new2; BY  date ; RUN ;
+
+PROC SORT DATA=new2; BY  id ; RUN ;
+data final2;
+set new2;
+by id;
+if  last.id then output;
+run;

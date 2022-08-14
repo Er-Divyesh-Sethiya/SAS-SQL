@@ -1,0 +1,105 @@
+
+/*reading infile */
+filename  fl '/home/u36424593/Files/listdata.txt' ;
+
+data listdata(compress=yes);
+infile   '/home/u36424593/Files/listdata.txt'  ;
+input id name $ age ;
+run;
+
+proc print data=listdata; run;
+
+data listdata1;
+infile   fl  ;
+input id name $ age ;
+run;
+proc print data=listdata1; run;
+
+data namedata;
+infile   '/home/u36424593/Files/named.txt'  ;
+length name $50.;
+input id= name= $ age= ;
+run;
+
+proc print data=namedata; run;
+
+
+data clmdata;
+infile   '/home/u36424593/Files/column.txt'  ;
+/*length name $10.;*/
+input id 1 name $ 3-10 gender $ 11  ;
+run;
+
+proc print data=clmdata; run;
+
+data fmtdata;
+infile   '/home/u36424593/Files/formated.txt'  ;
+/*length name $10.;*/
+input @1 id @3 name $ @11 gender $   ;
+run;
+
+proc print data=fmtdata; run;
+
+/*over statement */
+DAta over;
+infile '/home/u36424593/Files/flowover.txt' flowover ;
+input id dept $ age;
+run;
+
+proc print data=over; run;
+
+DAta over1;
+infile '/home/u36424593/Files/flowover.txt' missover ;
+input id dept $ age;
+run;
+
+data over1;
+infile '/home/u36424593/Files/flow.txt'  ;
+input id 4.;
+run;
+proc print data=over1; run;
+
+DAta over11;
+infile '/home/u36424593/Files/missover.txt' missover ;
+input id 4.;
+run;
+
+proc print data=over11; run;
+
+
+DAta over2;
+infile '/home/u36424593/Files/trunck.txt' truncover ;
+input id 3. ;
+run;
+
+proc print data=over2; run;
+
+
+DAta over3;
+infile '/home/u36424593/Files/trunck.txt' stopover ;
+input id 4. ;
+run;
+
+proc print data=over3; run;
+
+
+data datln;
+input patid patname $ zipcode;
+datalines;
+222 john 415648
+2 ronal 515423
+;
+run;
+
+proc print data=datln; run;
+
+
+data datln1;
+input patid patname $ zipcode;
+cards;
+222 john 415648
+2 ronal 515423
+;
+run;
+
+proc print data=datln1; run;

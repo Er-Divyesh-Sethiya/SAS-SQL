@@ -1,0 +1,105 @@
+/* Creating HTML Output */
+ODS HTML 
+   PATH = '/home/u36424593/Train'
+   FILE = 'CARS2.html'
+   STYLE = EGDefault;
+proc SQL;
+select make, model, invoice 
+from sashelp.cars
+where make in ('Audi','BMW')
+and type = 'Sports'
+;
+quit;
+
+proc SQL;
+select make,mean(horsepower)as meanhp
+from sashelp.cars
+where make in ('Audi','BMW')
+group by make;
+quit;
+
+ODS HTML CLOSE;
+
+/* Creating PDF Output */
+ODS PDF 
+   FILE = '/home/u36424593/Train/CARS2.pdf'
+   STYLE = EGDefault;
+proc SQL;
+select make, model, invoice 
+from sashelp.cars
+where make in ('Audi','BMW')
+and type = 'Sports'
+;
+quit;
+
+proc SQL;
+select make,mean(horsepower)as meanhp
+from sashelp.cars
+where make in ('Audi','BMW')
+group by make;
+quit;
+
+ODS PDF CLOSE; 
+
+
+/* ODS EXCEL OUPUT*/
+
+LIBNAME IMP  '/home/u36424593/Train';
+
+ods tagsets.excelxp file="/home/u36424593/TEMP/test.xls"
+options(embedded_titles="yes"
+autofilter="1-3"
+frozen_headers="3"
+frozen_rowheaders="1"
+absolute_column_width="8.5,11,7,9,8,8"
+autofit_height="yes"
+sheet_interval="bygroup"sheet_label=" "
+suppress_bylines="yes") style=normal;
+
+proc print data=sashelp.shoes noobs;
+title "Detail of Region #byval(region)";
+by region;
+run;
+
+ods tagsets.excelxp close;
+
+/* https://www.listendata.com/2016/04/send-sas-output-to-excel.html */
+
+
+
+/* RTF Output */
+
+ods html close;
+
+options nodate nonumber;
+proc sort data=sashelp.prdsale out=prdsale;
+    by Country;
+run;
+
+ods rtf file='/home/u36424593/Train/RTFPrdsale.rtf';
+title 'Actual Product Sales';
+title2 '(millions of dollars)';
+
+proc tabulate data=prdsale;   
+    class region division prodtype;   
+    classlev region division prodtype;   
+    var actual;   
+    keyword all sum;
+    keylabel all='Total';   
+    table (region all)*(division all),
+         (prodtype all)*(actual*f=dollar10.) /
+         misstext=[label='Missing']
+         box=[label='Region by Division and Type']; 
+ run;
+
+title 'Sales Figures for First Quarter by Product';
+title2;
+proc sgpanel data=prdsale;
+    where quarter=1;
+    panelby product / novarname;
+    vbar region / response=predict;
+    vline region / response=actual lineattrs=GraphFit;
+    colaxis fitpolicy=thin;
+    rowaxis label='Sales';
+run;
+ods rtf close;

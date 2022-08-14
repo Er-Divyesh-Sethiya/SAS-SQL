@@ -1,0 +1,108 @@
+data one;
+X=1; A='a'; output;
+X=2; A='b'; output;
+X=4; A='d'; output;
+run;
+
+data two;
+X=2; B='x'; output;
+X=3; B='y'; output;
+X=5; B='v'; output;
+run;
+/*cartesian Product*/
+proc sql;
+select *
+from one, two;
+QUIT;
+/*Inner Join Product*/
+proc sql;
+select *
+from one, two
+where one.x = two.x;
+quit;
+
+/*Inner Join Product-duplicate colum removal*/
+proc sql;
+select one.x, a, b
+from one, two
+where one.x = two.x;
+quit;
+
+/*left Join */
+proc sql;
+select * from one
+left join two 
+on one.X= two.X;
+quit;
+
+proc sql;
+select one.X,one.A,two.B from one
+left join two 
+on one.X= two.X;
+quit;
+
+/*Right Join */
+proc sql;
+select two.X,one.A,two.B from one
+right join two 
+on one.X= two.X;
+quit;
+
+
+ /*full join */
+proc sql;
+select *
+from one
+full join
+two
+on one.x=two.x;
+quit;
+
+/*Left Outer  join */
+proc sql;
+select ONE.X,ONE.A
+from one
+LEFT outer join
+two
+on one.x=two.x
+
+WHERE TWO.X IS NULL
+;
+quit;
+
+/*Right Outer  join */
+
+proc sql;
+select TWO.X,TWO.B
+from one
+RIGHT outer join
+two
+on one.x=two.x
+
+WHERE ONE.X IS NULL
+;
+quit;
+
+/*FULL OUTER JOIN */
+
+proc sql;
+select *
+from one
+full outer join
+two
+on one.x=two.x;
+quit;
+
+
+/*https://www.listendata.com/2014/06/proc-sql-merging.html*/
+
+
+
+
+
+
+
+
+
+
+

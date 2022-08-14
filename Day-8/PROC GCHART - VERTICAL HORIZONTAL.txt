@@ -1,0 +1,11 @@
+
+
+title1 "Weights of Students";
+proc gchart data=temp;
+hbar name / type=sum sumvar=weight;
+run;
+
+title1 "Weights of Students";
+proc gchart data=temp;
+vbar name / type=sum sumvar=weight;
+run;

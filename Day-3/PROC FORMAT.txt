@@ -1,0 +1,81 @@
+
+
+/*Character Format */
+proc format;
+value $gen
+M ='Male'
+F ='Female'
+;
+run;
+
+data trn;
+input sex $;
+datalines;
+M
+F
+M
+F
+;
+run;
+
+data chk;
+set trn;
+format sex $gen.;
+run;
+
+proc print data=chk;run;
+
+/*Numeric Format */
+proc format;
+value genn
+1 = 6
+2 = 7
+;
+run;
+
+data trn1;
+input gn ;
+datalines;
+1
+2
+2
+1
+;
+run;
+
+data chk1;
+set trn1;
+/*length gn $2.;*/
+format gn genn.;
+run;
+
+proc print data=chk1;run;
+
+
+/*Picture Format */
+proc format;
+picture rainamt
+0-2 ='9.99 slight'
+2<-4 ='9.99 moderate'
+4<-<10 ='9.99 high'
+other ='check value';
+run;
+
+data rain;
+input amount;
+datalines;
+4
+3.9
+20
+.5
+6
+;
+run;
+
+data fin;
+set rain;
+format amount rainamt.;
+run;
+
+proc print data=fin;run;
+

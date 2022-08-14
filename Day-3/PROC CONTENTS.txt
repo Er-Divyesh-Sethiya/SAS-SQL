@@ -1,0 +1,13 @@
+proc contents data=imp.class out=new;
+run;
+
+data new1(keep=name);
+set new;
+run;
+
+proc export
+data=new1
+outfile ='/home/u36424593/TEMP/fields.xls'
+dbms=xls
+replace;
+run;

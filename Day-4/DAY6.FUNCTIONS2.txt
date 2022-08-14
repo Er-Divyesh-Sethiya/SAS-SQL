@@ -1,0 +1,139 @@
+
+
+*functions;
+
+
+
+data functs;
+
+dtn='%A1$*&pha Di4git Welcom6e to Elear1nin9g';
+r1=anyalnum(dtn);
+r2=anyalnum(dtn,5);
+r3=anyalnum(dtn,-3);
+X=SUBSTR(DTN,anyalnum(dtn,-3),1);
+
+r1=anyalpha(dtn);
+r2=anyalpha(dtn,5);
+r3=anyalpha(dtn,-3);
+
+r1=anydigit(dtn);
+r2=anydigit(dtn,5);
+r3=anydigit(dtn,-3);
+
+r1=anypunct(dtn);
+r2=anypunct(dtn,5);
+r3=anypunct(dtn,-4);
+
+r1=anyspace(dtn);
+r2=anyspace(dtn,5);
+r3=anyspace(dtn,-4);
+
+
+trn='I wasin in The theatre';
+
+a1=find(trn,'in');
+a2=find(trn,'the','i');
+a3=find(trn,'in',5);
+
+a1=findc(trn,'ina');
+a2=findc(trn,'the','i');
+a3=findc(trn,'in',5);
+
+a1=findw(trn,'in');
+a2=findw(trn,'the','i');
+a3=findw(trn,'in',5);
+nri='DEABC C X';
+
+a1=index(nri,'C');
+a2=index(nri,'DEF');
+a3=index(nri,'X');
+
+
+a1=indexc(nri,'C');
+a2=indexc(nri,'DEF');
+a3=indexc(nri,'X');
+
+
+a1=indexw(nri,'C');
+a2=indexw(nri,'DEF');
+a3=indexw(nri,'X');
+
+n=count(nri,'X');
+nn=countw(nri);
+
+nm='Mr.Prabhakar';
+trw=tranwrd(nm,'Mr','Ms');  
+trnl=translate(nm,'cl','Pk');  
+
+
+
+xx=intnx('year','01jan2019'd,1);
+xx1=intnx('month','01jan2019'd,1);
+xx2=intnx('day' ,'01jan2020'd,30);
+
+
+
+xx=intnx('year','01mar2022'd,1,'b');
+xx1=intnx('year','01mar2022'd,-1,'m');
+xx2=intnx('year','01mar2022'd,-1,'e');
+
+format xx yymmdd10. xx1 yymmdd10. xx2 yymmdd10. ;
+vv=intck('year','01jan2019'd,'01jan2020'd);
+vv1=intck('year','01jan2019'd,'01jan2020'd,'C'); /* Continuous method */
+
+vv2=intck('year','31dec2019'd,'01jan2020'd);
+no_of_semiyears  = intck ('SEMIYEAR','01jan2019'd, '01jan2020'd);
+no_of_quarters  = intck ('QUARTER', '01jan2019'd, '01jan2020'd);
+no_of_months  = intck ('MONTH', '01jan2019'd, '01jan2020'd);
+no_of_weeks  = intck ('WEEK', '01jan2019'd, '01jan2020'd);
+no_of_days  = intck ('DAY', '01jan2019'd, '01jan2020'd);
+
+
+
+
+run;
+
+
+proc  print data=functs; run;
+
+/* sum */
+data WORK.ONE; 
+INPUT studentid mark1 mark2 mark3;
+DATALINES;
+101 60 70 80
+105 50 90 100
+110 70 70 70
+;
+ run;
+
+data WORK.TWO;
+set WORK.ONE;
+total2=mark1+mark2+mark3;
+Total1=sum(mark1 ,mark2 ,mark3);
+min1=min(of mark:);
+min1=max(of mark:);
+Total=sum(of mark:); 
+run;
+
+/*LAG*/
+
+data example;
+input id value;
+cards;
+1 25
+1 30
+1 35
+1 40
+2 25
+2 30
+2 37
+;
+run;
+
+data temp;
+set example;
+lag1_value = lag(value);
+lag2_value = lag2(value);
+run;
+
+

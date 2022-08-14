@@ -1,0 +1,104 @@
+data class;
+ set sashelp.class;
+run; 
+ 
+data classfit;
+ set sashelp.classfit;
+run;
+
+proc datasets lib=work;
+ run;
+quit;
+
+proc datasets lib=work memtype=data;
+ run;
+quit;
+
+
+proc datasets lib=work memtype=data;
+ contents data=class;
+run;
+quit;
+
+
+proc datasets lib=work memtype=data; /* List all datasets */
+ contents data=class; /* List variables and their attributes for the CLASS dataset */
+run;
+ contents data=classfit; /* List variables and their attributes for the CLASSFIT dataset */
+run; 
+quit;
+
+/* Append */
+
+proc datasets lib=work;
+ append out=class data=class;
+run;
+quit;
+
+
+proc datasets lib=work memtype=data;
+ contents data=class;
+run;
+
+
+proc datasets lib=work;
+ append out=class data=classfit;
+run; 
+
+
+proc datasets lib=work;
+ append out=class data=classfit force;
+run;
+ contents data=class;
+run;
+quit;
+
+
+proc datasets;
+ copy in=work out=mydata;
+run;
+quit;
+
+
+proc datasets;
+ copy in=sashelp out=mydata;
+ select cars baseball;
+run;
+quit;
+
+
+proc datasets nolist;
+ copy in=work out=mydata move;
+ select class;
+run;
+quit;
+
+
+
+proc datasets lib=work memtype=data;
+ delete class;
+run;
+quit;
+
+
+proc datasets lib=work kill;
+run;
+quit;
+
+
+proc datasets lib=work memtype=data;
+ modify class (label='Student Class List');
+  format height weight number7.2;
+  label name = 'Student Name'
+                  sex = 'Student Gender';
+run;
+ contents data=class;
+run;
+quit;  
+
+
+
+
+
+
+

@@ -1,0 +1,130 @@
+/*https://www.listendata.com/2015/12/sas-macros-made-easy.html*/
+	
+
+/*1 Local & Global Macro*/
+%let a  ='alpha';
+%put &a.;
+
+data nw;
+/*%let a = 'new';*/
+c= &a.;
+run;
+
+proc print data = nw; run;
+/*2 macro passing values*/
+%macro sum(a= , b=);
+data cal;
+c= &a.+&b.;
+/*c= a+b;*/
+run;
+proc print data=cal; run;
+%mend;
+
+%sum(a=10,b=20);
+%sum(a=-2,b=5);
+
+
+%macro sum(a= , b=  , dsn=);
+data &dsn. ;
+c= &a.+ &b.;
+run;
+proc print data=&dsn.; run;
+%mend;
+%sum(a=-2,b=2,dsn=ggg1);
+
+%include 'E:\sas_dev\mc.txt';
+%sum(a=-2,b=12,dsn=ggg2);
+
+%let a = 10;  /*global macro */
+
+data check;
+%let a =50;
+  c= 2 + &a;
+run;
+  proc print data=check; run;
+
+  data b;
+  length br $2.;
+  id=1; br='UB'; output;
+  id=2; br='LB'; output;
+  id=11; br='UB'; output;
+  id=21; br='LB'; output;
+  id=31; br='UB'; output;
+  id=24; br='LB'; output;
+run;
+
+data nw;
+set b;
+if br='UB' then output;
+run;
+
+%macro bus(brth=,newU=,newL=);  /*function decaration */
+data &newU. &newL. ;
+set b;
+if &brth. =br then do; 
+  fare=400; 
+  output &newU.;  
+end;
+else do; fare=600; output &newL.;  end;
+run;
+/*proc print data=&newU.; run;*/
+/*proc print data=&newL.; run;;*/
+
+%mend ;   
+
+%bus(brth='UB', newU=upper, newL=lower);
+%bus(brth='LB', newU=upper, newL=lower);
+
+ 
+/*3 Select Class*/
+proc sql;
+select count(name) into : cnt
+from sashelp.class;
+
+quit;
+ %put &cnt;
+proc sql;
+select name into : name1 seperated by ',' 
+from sashelp.class;
+
+quit;
+ %put &name1;
+data nn;
+c=&cnt;
+run;
+
+proc print data=nn;run;
+/*4 call Symput*/
+data _null_;
+/*set test;*/
+call symput('var1' ,2019);
+run;
+
+data ck;
+c= "&var1.";
+run;
+
+proc print data=ck;run;
+
+/*5 Do Class*/
+%macro calc(start=,stop=);
+%do year= &start. %to &stop.;
+data test;
+year=2000+&year;
+run;
+%end;
+proc print data=test;run;
+%mend;
+
+%calc(start=1,stop=5);
+
+
+
+
+
+  
+
+
+
+
+

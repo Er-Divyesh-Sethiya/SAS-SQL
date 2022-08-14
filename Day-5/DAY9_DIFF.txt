@@ -1,0 +1,160 @@
+/* DIFF 1*/
+*The WHERE statement can be used in procedures to subset data while IF statement cannot be used in procedures;
+*WHERE can be used as a data set option while IF cannot be used as a data set option.;
+DATA CHECK;
+SET SASHELP.CARS;
+RUN;
+
+PROC SORT DATA=CHECK(WHERE=(MAKE='BMW')) OUT=CHK1; 
+BY MODEL;
+RUN;
+PROC SORT DATA=CHECK(IF=(MAKE='BMW')); 
+BY MODEL;
+RUN;
+
+DATA NEW;
+SET CHECK(WHERE=(MAKE='BMW'));
+/* SET CHECK(IF=(MAKE='BMW')); */
+RUN;
+/* DIFF 2*/
+*The WHERE statement can be used in procedures to subset data while IF statement cannot be used in procedures;
+PROC SORT DATA=CHECK ; by model;
+WHERE MAKE='BMW'; 
+RUN;
+
+
+PROC SORT DATA=CHECK; by model;
+IF MAKE='BMW'; 
+RUN;
+
+/*DIFF-3 */
+*The WHERE statement is more efficient than IF statement. It tells SAS not to read all observations from the data set.;
+DATA CHECK;
+SET SASHELP.CARS;
+WHERE TYPE='Sedan';
+RUN;
+
+DATA CHECK;
+SET SASHELP.CARS;
+IF TYPE='Sedan';
+RUN;
+/*DIFF-4 */
+* When reading data using INPUT statement.IF Statement IF Statement can be used when specifying an INPUT statement.;
+
+
+DATA CHECK;
+INPUT CLAIMID DRUGNAME $ QUANTITY NOOFUNITS;
+IF NOOFUNITS EQ 2;
+CARDS;
+367280182 PARACETAMOLE 10 2
+367280183 ACTION500 5 3
+367280184 QTPIN 4 2
+367280185 Flonase 10 2
+367280186 Fosamax 10 5
+367280187 Glucophage 5 4
+367280188 Glucotrol 4 1
+367280189 Flonase 10 2
+;
+RUN;
+
+
+DATA CHECK;
+INPUT CLAIMID DRUGNAME $ QUANTITY NOOFUNITS;
+WHERE NOOFUNITS EQ 2;
+CARDS;
+367280182 PARACETAMOLE 10 2
+367280183 ACTION500 5 3
+367280184 QTPIN 4 2
+367280185 Flonase 10 2
+367280186 Fosamax 10 5
+367280187 Glucophage 5 4
+367280188 Glucotrol 4 1
+367280189 Flonase 10 2
+;
+RUN;
+ 
+/*DIFF-5 */
+/* fILETERING ON NEW VARIABLES CAN BE DONE IN if */
+
+
+DATA CHECK;
+INPUT CLAIMID DRUGNAME $ QUANTITY NOOFUNITS;
+CARDS;
+367280182 PARACETAMOLE 10 2
+367280183 ACTION500 5 3
+367280184 QTPIN 4 2
+367280185 Flonase 10 2
+367280186 Fosamax 10 5
+367280187 Glucophage 5 4
+367280188 Glucotrol 4 1
+367280189 Flonase 10 2
+;
+RUN;
+
+
+DATA CHECK1;
+LENGTH RATING $20.;
+SET CHECK;
+IF NOOFUNITS EQ 2 THEN RATING ='POOR';
+ELSE IF NOOFUNITS GT 2  AND NOOFUNITS LE 4  THEN RATING ='AVERAGE';
+ELSE RATING ='EXCELLENT';
+IF RATING = 'AVERAGE' THEN OUTPUT;
+RUN;
+
+
+  
+DATA CHECK1;
+LENGTH RATING $20.;
+SET CHECK;
+IF NOOFUNITS EQ 2 THEN RATING ='POOR';
+ELSE IF NOOFUNITS GT 2  AND NOOFUNITS LE 4  THEN RATING ='AVERAGE';
+ELSE RATING ='EXCELLENT';
+WHERE RATING = 'AVERAGE' ;
+RUN;
+
+/*DIFF-6*/
+*WHERE statement cannot be applied on automatic variables such as _N_, First., Last. Variables. While IF statement can be applied on automatic variables.;
+
+PROC SORT DATA =CHECK ;BY NOOFUNITS; RUN;
+DATA CHECK1;
+SET CHECK;
+BY NOOFUNITS;
+IF  FIRST.NOOFUNITS THEN OUTPUT;
+RUN;
+ 
+ DATA CHECK1;
+SET CHECK;
+BY NOOFUNITS;
+WHERE FIRST.NOOFUNITS ;
+RUN;
+/*DIFF-7*/
+*WHERE and IF when merging data sets WHERE statement applies the subset condition before merging the data sets, Whereas, IF statement applies the subset condition after merging the data sets.;
+
+data VAL1;
+input ACCOUNTNO BALANCE;
+cards;
+31078386323 39000
+31078386324 34000
+31078386325 35000
+31078386326 36000
+31078386327 37000
+31078386328 38000
+;
+run;
+data VAL2;
+input ACCOUNTNO BALANCE;
+cards;
+31078386326 46000
+31078386327 47000
+;
+run;
+data comb;
+merge VAL1 VAL2;
+by ACCOUNTNO;
+where BALANCE <= 38000;
+run;
+data comb1;
+merge VAL1 VAL2;
+by ACCOUNTNO;
+if BALANCE <= 38000;
+run;

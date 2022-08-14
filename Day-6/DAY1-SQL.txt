@@ -1,0 +1,105 @@
+libname ll '/home/u36424593/Train';
+
+proc sql;
+select *,
+height*.06 as bonus
+from sashelp.class
+where weight>100
+order by age;
+quit;
+
+/*Column position SORT */
+proc sql;
+select *,
+height*.06 as bonus
+from sashelp.class
+where weight>100
+order by 3;
+quit;
+
+
+proc sql;
+select *,
+height*.06 as bonus
+from sashelp.class
+where weight>100
+order by name ,sex;
+quit;
+
+proc sql;
+select *,
+height*.06 as bonus
+from sashelp.class
+where weight>100
+order by name ,sex, 3;
+quit;
+
+/* joining two Tables */
+
+proc sql;
+select a.* , b.salary,
+height*.06 as bonus
+from sashelp.class as a , ll.emplsal as b
+where a.name= b.name 
+ ;
+quit;
+
+
+/* Group */ 
+ 
+proc sql;
+select sex , sum(b.salary) as sum_sal
+from sashelp.class as a , ll.emplsal as b
+where a.name= b.name 
+group by age  
+ ;
+quit;
+
+proc sql;
+select age 
+, min(b.salary) as min_sal
+, max(b.salary) as max_sal
+
+from sashelp.class as a , ll.emplsal as b
+where a.name= b.name 
+group by age  
+ ;
+quit;
+
+proc sql;
+select age 
+, avg(b.salary) as avg_sal
+from sashelp.class as a , ll.emplsal as b
+where a.name= b.name 
+group by age  
+ ;
+quit;
+
+/* Having */
+proc sql;
+select age 
+, avg(b.salary) as avg_sal
+from sashelp.class as a , ll.emplsal as b
+where a.name= b.name 
+group by age 
+having avg_sal > 20000 
+ ;
+quit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

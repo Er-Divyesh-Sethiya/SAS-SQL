@@ -1,0 +1,20 @@
+data transp;
+input name $ subject $ marks;
+cards;
+shameel maths 96
+viji  english 70
+mahi german 82
+priya english 21
+kranti maths 62
+;
+run;
+
+
+proc sort data = transp; by name; run;
+proc transpose data=transp out= new prefix=nm;
+by name; 
+id subject;
+/*var marks;*/
+run;
+
+proc print data =new ; run;

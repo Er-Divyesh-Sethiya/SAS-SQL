@@ -1,0 +1,264 @@
+
+
+proc sql;
+select *
+from sashelp.class;
+QUIT;
+
+proc sql feedback;
+select *
+from sashelp.class;
+QUIT;
+
+proc sql outobs=10;
+select NAME , SEX
+from sashelp.class;
+QUIT;
+
+
+proc sql  ;
+select DISTINCT  SEX ,AGE
+from sashelp.class
+ORDER BY 2;
+QUIT;
+
+proc sql  ;
+select   NAME ,AGE , SEX
+from sashelp.class
+WHERE  SEX= 'M'
+AND AGE > 14;
+QUIT;
+
+proc sql  ;
+select   NAME ,AGE , SEX
+from sashelp.class
+WHERE  AGE BETWEEN 12 AND 14;
+QUIT;
+
+
+proc sql  ;
+select   NAME ,AGE , SEX
+from sashelp.class
+/* WHERE  NAME CONTAINS 'Ja'; */
+WHERE  NAME ? 'Ja';
+QUIT;
+
+
+proc sql  ;
+select   NAME ,AGE , SEX
+from sashelp.class
+WHERE  AGE IN(14,15,16);
+QUIT;
+
+LIBNAME NN '/home/u36424593/Train';
+DATA NN.times ;
+  INPUT id trial1 trial2 trial3 TRUNCOVER;
+CARDS ;
+1 1.5 1.4 1.6 
+2 1.5  .  1.9 
+3  .  2.0 1.6 
+4  .   .  2.2 
+5 2.1 2.3 2.2
+6 1.8 2.0 1.9
+;
+RUN ;
+ 
+PROC PRINT DATA=NN.times ;
+RUN ;  
+
+
+options missing = ' ';
+
+LIBNAME NN '/home/u36424593/Train';
+DATA NN.timesBLANK ;
+  INPUT id trial1 trial2 trial3 ;
+CARDS ;
+1 1.5 1.4 1.6 
+2 1.5  .  1.9 
+3  .  2.0 1.6 
+4  .   .  2.2 
+5 2.1 2.3 2.2
+6 1.8 2.0 1.9
+;
+RUN ;
+ 
+PROC PRINT DATA=NN.timesBLANK ;
+RUN ; 
+
+
+
+
+proc sql  ;
+select   *
+from NN.TIMES
+WHERE  trial1 IS MISSING;
+/* WHERE  trial2 = .; */
+QUIT;
+
+
+proc sql  ;
+select   *
+from NN.TIMES
+WHERE  trial1 IS NULL;
+/* WHERE  trial2 = ' '; */
+QUIT;
+
+
+proc sql  ;
+select   NAME ,AGE , SEX
+from sashelp.class
+/* WHERE  NAME LIKE 'ne%'; */
+WHERE  NAME LIKE '%ne%';
+QUIT;
+
+proc sql  ;
+select   NAME ,AGE , SEX
+from sashelp.class
+WHERE  NAME =* 'Jane';
+QUIT;
+
+/*any one of the values match */
+
+proc sql  ;
+select   NAME ,AGE , SEX ,HEIGHT
+from sashelp.class
+WHERE  height < ANY (select height
+ from sashelp.class)
+ ;
+QUIT;
+
+/*all the values match */
+
+proc sql  ;
+select   NAME ,AGE , SEX ,HEIGHT
+from sashelp.class
+WHERE  height < ALL (select height
+ from sashelp.class)
+ ;
+QUIT;
+
+
+proc sql  ;
+select   NAME ,AGE , SEX ,HEIGHT
+from sashelp.class F1
+WHERE  EXISTS (select *
+ from sashelp.class F2  WHERE F1.NAME = F2.NAME	)
+ ;
+QUIT;
+
+proc sql  ;
+select   NAME ,AGE , SEX ,HEIGHT
+from sashelp.class F1
+WHERE  NOT EXISTS (select *
+ from sashelp.class F2  WHERE F1.NAME = F2.NAME	)
+ ;
+QUIT;
+
+proc sql  ;
+select   NAME ,AGE , SEX ,HEIGHT + WEIGHT AS WEIGHEIG
+from sashelp.class
+;
+QUIT;
+
+proc sql  ;
+select   NAME ,AGE , SEX ,HEIGHT + WEIGHT AS WEIGHEIG
+from sashelp.class
+WHERE WEIGHEIG  < 150
+;
+QUIT;
+
+proc sql  ;
+select   NAME ,AGE , SEX ,HEIGHT + WEIGHT AS WEIGHEIG
+from sashelp.class
+WHERE CALCULATED WEIGHEIG  < 150
+;
+QUIT;
+
+proc sql  ;
+select   DATE label='DOB' , AMOUNT AS USDOL FORMAT DOLLAR12.2
+from sashelp.BUY
+;
+QUIT;
+
+
+proc sql  ;
+title 'Current Bonus Information';
+title2 'Employees with Salaries > $2,000';
+select   DATE label='DOB' , AMOUNT * -1 AS USDOL FORMAT DOLLAR12.2
+from sashelp.BUY
+;
+QUIT;
+
+
+proc sql outobs=20;
+select avg(salary) as AvgSalary
+from NN.SALARY;
+RUN;
+
+
+proc sql outobs=20;
+select  SEX ,avg(salary) as AvgSalary
+from NN.SALARY
+;
+QUIT;
+
+proc sql outobs=20;
+select  SEX ,avg(salary) as AvgSalary
+from NN.SALARY
+GROUP BY SEX
+;
+QUIT;
+
+
+
+proc sql ;
+select  COUNT (*)  as CNT
+from NN.SALARY
+;
+QUIT;
+
+proc sql ;
+select  COUNT (SEX)  as CNT
+from NN.SALARY
+;
+QUIT;
+
+
+proc sql ;
+select  COUNT (DISTINCT SEX)  as CNT
+from NN.SALARY
+;
+QUIT;
+
+
+proc sql outobs=20;
+select  SEX ,avg(salary) as AvgSalary
+from NN.SALARY
+GROUP BY SEX
+having avg(salary) > 56000
+;
+QUIT;
+
+
+proc sql outobs=20;
+VALIDATE
+select  SEX ,avg(salary) as AvgSalary
+from NN.SALARY
+GROUP BY SEX
+having avg(salary) > 56000
+;
+QUIT;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

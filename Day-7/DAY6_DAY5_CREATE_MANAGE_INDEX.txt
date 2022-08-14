@@ -1,0 +1,88 @@
+PROC SQL;
+
+create table WORK.PAYROLLMASTER( bufsize=4096 )
+(
+DateOfBirth num format=DATE9. informat=DATE9.,
+DateOfHire num format=DATE9. informat=DATE9.,
+EmpID char(4),
+Gender char(1),
+JobCode char(3),
+Salary num format=DOLLAR9.
+);
+
+QUIT;
+
+
+PROC SQL;
+INSERT INTO WORK.PAYROLLMASTER
+VALUES('01JAN1989'D,'01JAN2020'D,'2112','F','111',223400) 
+VALUES('01FEB1989'D,'01JAN2020'D,'2113','F','111',323400) 
+VALUES('01MAR1989'D,'01JAN2020'D,'2114','F','111',423400) 
+VALUES('01APR1989'D,'01JAN2020'D,'2115','F','111',523400) 
+VALUES('01JUN1989'D,'01JAN2020'D,'2116','F','111',623400) 
+VALUES('01JUL1989'D,'01JAN2020'D,'2117','F','111',723400) 
+;
+QUIT;
+
+
+
+PROC SQL;
+create unique index EmpID on WORK.PAYROLLMASTER(EmpID);
+QUIT;
+
+PROC SQL;
+INSERT INTO WORK.PAYROLLMASTER
+VALUES('01JAN1989'D,'01JAN2020'D,'1112','M','111',123400) ;
+;
+QUIT;
+
+proc sql;
+create unique index EmpID
+on work.payrollmaster(empid);
+QUIT;
+
+proc sql;
+create unique index daily
+on work.payrollmaster(EmpID,DateOfBirth);
+RUN;
+
+
+options msglevel=i;
+proc sql;
+select *
+from payrollmaster
+where EMPID='2112';
+QUIT;
+
+
+proc sql;
+select *
+from work.payrollmaster(IDXWHERE=NO)
+where EMPID='2112';
+QUIT;
+
+proc sql;
+select *
+from payrollmaster(IDXNAME=EMPID)
+where EMPID='2112';
+QUIT;
+
+
+proc sql;
+DROP INDEX EMPID
+from WORK.payrollmaster ;
+QUIT;
+
+DATA payrollmaster1;
+SET work.payrollmaster;
+RUN;
+
+DATA MYDATA(INDEX=(EMPID/UNIQUE));
+SET work.payrollmaster1;
+RUN;
+
+DATA MYDATA(INDEX=(DAILYY= (EMPID DateOfBirth)) );
+SET work.payrollmaster1;
+RUN;
+
+

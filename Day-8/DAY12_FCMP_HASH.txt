@@ -1,0 +1,146 @@
+libname wh "\\ncfile05\care_analytics_dev\users\prabhakar";
+
+PROC FCMP OUTLIB=WH.paper.vowels;
+
+FUNCTION FNDVOWELS(STRING $);
+
+  ARRAY vowel[5] $ ('a','e','i','o','u');
+
+  vowelcount=0;
+
+  do strngindex=1 to length(string);
+
+     stringchar =substr(string , strngindex , 1);
+
+       do vowelindex =1 to dim(vowel);
+
+        if (stringchar = vowel[vowelindex] OR
+
+            stringchar = UPCASE(vowel[vowelindex] )
+
+              ) then do;
+
+              vowelcount= vowelcount +1;
+
+              LEAVE;
+
+           end;
+
+     end;
+
+end;
+
+RETURN(vowelCount);
+
+ENDSUB;
+
+quit;
+
+ 
+
+OPTION CMPLIB=wh.paper;
+
+DATA membname;
+
+input name $;
+
+datalines;
+
+vinayak
+
+anjaneya
+
+aeiou
+
+;
+
+RUN;
+
+DATA new;
+
+set membname;
+
+Count_name_vowels = FNDVOWELS(name);
+
+RUN;
+
+/*HASH*/
+data acities;
+
+input code $ city $10. name $50.;
+
+datalines;
+
+AA Delhi     Indira_Gandhia_Internationala_Airport
+
+BB Hyderabad Rajiva_Gandhia_Internationala_Airport
+
+CC Mumbai    Chhatrapatia_Shivajia_Internationala_Airport
+
+DD Chennai   Chennaia_Internationala_Airport
+
+EE Banglore  Kempegowdaa_Internationala_Airport
+
+;
+
+run;
+
+data revenue;
+
+input origin  $ dest $ FLIGHID ;
+
+datalines;
+
+AA BB 101
+
+BB CC 102
+
+AA DD 103
+
+CC DD 104
+
+AA EE 105
+
+DD EE 106
+
+AA CC 107
+
+;
+
+run;
+
+ 
+
+ 
+
+data Report(drop=code rc);
+
+if _N_=1 then do;
+set WORK.acities;
+declare hash airports (dataset: "WORK.acities");
+
+airports.definekey ("Code");
+
+airports.definedata ("City", "Name");
+
+airports.definedone();
+
+end;
+
+set WORK.revenue;
+
+rc=airports.find(key:origin);
+
+OriginCity=city;
+
+OriginAirport=name;
+
+rc=airports.find(key:dest);
+
+DestCity=city;
+
+DestAirport=name;
+
+run;
+
+proc print data=report;run;

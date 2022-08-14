@@ -1,0 +1,262 @@
+/* SET statement in detail */
+data trans;
+input id  amount atm $;
+datalines;
+1 100 axis
+2 100 hdfc
+1 300 citi
+1 400 cub
+3 100 indian
+3 400 scb
+4 500 canara
+;
+run;
+
+proc sort data =trans; by id; run;
+proc print data=trans; run;
+
+/* first. and last.*/
+data final;
+set trans;
+by id;
+a=first.id;
+b=last.id;
+
+run;
+proc print data=final; run;
+
+/* example 2  */
+data new;
+input liftid liftname $ price;
+datalines;
+111 toshiba  500
+222 usha 400
+111 toshiba 40
+333 polar 32
+222 premier 400
+666 toshiba  500
+222 usha 400
+777 toshiba 40
+333 polar 32
+777 premier 400
+666 toshiba  500
+666 usha 400
+888 toshiba 40
+333 polar 32
+888 premier 400
+111 toshiba  500
+777 usha 400
+111 toshiba 40
+777 polar 32
+444 premier 400
+;
+run;
+
+proc sort data= new ; by liftid; run;
+proc print data=new; run;
+data fout lout oout;
+set new;
+by liftid;
+a=first.liftid;
+b=last.liftid;
+if first.liftid  then output fout;
+else if last.liftid  then output lout;
+else if not first.liftid and not last.liftid then output oout;
+run;
+proc print data=newcal; run;
+
+
+data newcal;
+set new;
+retain fineamount cnt;
+by liftid;
+
+if first.liftid then do;
+fineamount= 0;
+cnt=1;
+end;
+
+else if not first.liftid and not last.liftid then do;
+fineamount=fineamount + 50;
+cnt=cnt+1;
+end;
+
+else if last.liftid then do;
+fineamount=fineamount +500;  
+cnt=cnt+1;
+end;
+
+/* if last.liftid then output; */
+run;
+proc print data=newcal; run;
+
+/*To calculate total amount in the table */
+data total_amt;
+set newcal;
+retain sum 0;
+sum=sum+fineamount;
+
+run;
+
+
+ 
+/* Transaction charges if a person use ATM more than once */
+data final1 ;
+set trans;
+retain charge ;
+by id;
+if first.id then do;
+charge= 0;
+/*output final1;*/
+end;
+
+else do;
+charge = charge + 5;
+/*output final2;*/
+end;
+
+run;
+proc print data=final1; run;
+
+
+/* UPDATE DATASET */
+data master;
+input acc_no first_name $ last_name $;
+datalines;
+1 A B
+2 A B
+3 A B
+4 A B
+5 A B
+6 A B
+8 A B
+7 A B
+;
+run;
+proc sort data=master ; by acc_no; run;
+
+data transaction;
+input acc_no first_name $ last_name $;
+datalines;
+6 C D
+8 C D
+9 C D
+;
+run;
+
+data master;
+      update master transaction;
+      by acc_no;
+    a='new';
+run;
+proc print data= master; run;
+/* REFER -http://sasprogrammingwonders.blogspot.com/2013/03/differences-in-upadte-and-modify.html#:~:text=Modifying%20a%20SAS%20data%20set,data%20set%2C%20while%20updating%20can.&text=We%20can%20change%20an%20existing,following%20figure%20shows%20the%20results. */
+
+/* MODIFY DATASET */
+
+data master;
+input acc_no first_name $ last_name $;
+datalines;
+1 A B
+2 A B
+3 A B
+4 A B
+5 A B
+6 A B
+8 A B
+7 A B
+;
+run;
+
+data transaction;
+input acc_no first_name $ last_name $;
+datalines;
+6 C D
+8 C D
+;
+run;
+
+data master;
+      MODIFY master transaction;
+      by acc_no;
+    a='new';
+run;
+
+proc print data= master; run;
+
+/* Modify can be done only for already existing data on master table */
+data transaction;
+input acc_no first_name $ last_name $;
+datalines;
+6 C D
+8 C D
+9 C D
+;
+run;
+
+data master;
+      modify master transaction;
+      by acc_no;
+run;
+proc print data= master; run;
+
+/* PART2 */
+libname invty '/home/u36424593/Train' ;
+data invty.stock(index=(partno) );
+   input PARTNO $ DESC $ INSTOCK @17 
+         RECDATE date7. @25 PRICE;
+   format  recdate date7.;
+   datalines;
+K89R seal   34  27jul95 245.00
+M4J7 sander 98  20jun95 45.88
+LK43 filter 121 19may96 10.99
+MN21 brace 43   10aug96 27.87
+BC85 clamp 80   16aug96 9.55
+NCF3 valve 198  20mar96 24.50
+KJ66 cutter 6   18jun96 19.77
+UYN7 rod  211   09sep96 11.55
+JD03 switch 383 09jan97 13.99
+BV1E timer 26   03jan97 34.50
+;
+run;
+proc print data=invty.stock; run;
+/* Modufy for entire COLUMN */
+data invty.stock(compress=yes);
+   modify invty.stock;
+   recdate=today();
+run;
+proc print data=invty.stock; run;
+
+/* Modify based on COLUMN VALUE */
+
+data addinv;
+   input PARTNO $ NWSTOCK;
+   datalines;
+K89R 55
+M4J7 21
+LK43 43
+MN21 73
+BC85 57
+NCF3 90
+KJ66 2
+UYN7 108
+JD03 55
+BV1E 27
+;
+run;
+
+data invty.stock;
+   modify invty.stock addinv;
+   by partno;
+   RECDATE=today();
+   INSTOCK=instock+nwstock;
+/*   if _iorc_=0 then replace;*/
+run;
+proc print data=invty.stock; run;
+
+/* Link - https://v8doc.sas.com/sashtml/lgref/z0173361.htm */
+
+
+
+
+

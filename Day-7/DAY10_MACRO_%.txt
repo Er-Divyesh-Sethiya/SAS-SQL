@@ -1,0 +1,111 @@
+/*SYMPUT VS SYMGET */
+data _null_;
+set sashelp.class;
+if _N_ = 1 then do;
+call symput('nvar', name);
+end;
+run;
+%put &nvar;
+*Get macro variable value in a dataset;
+data want;
+var1=symget('nvar');
+run;
+
+/* %IF works to run procedures */
+%macro temp(N=);
+%if &N. > 10 %then %do;
+proc means data = sashelp.class MEAN;
+var age;
+run;
+%end;
+%else %put better luck next time;
+%mend;
+%temp(N=19);
+/* IF Statement does not work to run procedure.  */
+%macro temp2(N=);
+data _null_;
+if &N. > 10 then do;
+proc means data = sashelp.class MEAN;
+var age;
+run;
+end;
+else put "the value is less than or equal to 10";
+run;
+%mend;
+%temp2(N=11);
+/* The following program does not work as the %IF is not valid outside macro.  */
+%let N = 12;
+%if &N. > 10 %then %do;
+proc means data = sashelp.class MEAN;
+var age;
+run;
+%end;
+%else %put better luck next time;
+
+/* SAS Macro will be executed first and once completed, data step statements will be executed. */
+
+%macro test;
+data temp;
+do j =1 to 5;
+N = j *5;
+put N;
+%let i = 1;
+%if &i %then %put the value of i is equal to 1;
+end;
+run;
+%mend;
+%test;
+
+/* When either of DO END or %DO %END can be used */
+data temp;
+do j =1 to 5;
+N = j *5;
+output;
+end;
+drop j;
+run;
+
+
+%macro test;
+data temp;
+%do j = 1 %to 5;
+N = &j. *5;
+output;
+%end;
+run;
+%mend;
+%test;
+
+
+DATA orders;
+ INPUT CustomerID $ 1-3 OrderDate DATE7. Model $ 13-24 Quantity;
+ datalines;
+287 15OCT03 Delta Breeze 15
+287 15OCT03 Santa Ana    15
+274 16OCT03 Jet Stream   1
+174 17OCT03 Santa Ana    20
+174 17OCT03 Nor'easter   5
+174 17OCT03 Scirocco     1
+347 18OCT03 Mistral      1
+287 21OCT03 Delta Breeze 30
+287 21OCT03 Santa Ana    25
+;
+RUN;
+PROC PRINT DATA = orders NOOBS;RUN;
+
+%MACRO reports;
+ %IF &SYSDAY = Monday %THEN %DO;
+ PROC PRINT DATA = orders NOOBS;
+ FORMAT OrderDate DATE7.;
+ TITLE "&SYSDAY Report: Current Orders";
+ %END;
+ %ELSE %IF &SYSDAY = Sunday %THEN %DO;
+ PROC TABULATE DATA = orders;
+ CLASS CustomerID;
+ VAR Quantity;
+ TABLE CustomerID ALL, Quantity;
+ TITLE "&SYSDAY Report: Summary of Orders";
+ %END;
+%MEND reports;
+RUN;
+%reports;

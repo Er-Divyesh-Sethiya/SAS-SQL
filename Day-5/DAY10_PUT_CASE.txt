@@ -1,0 +1,139 @@
+/*CASE STATEMENT*/
+
+data Heart ;
+set sashelp.heart;
+select (Smoking_Status);
+   when ('Non-smoker')        Smoking_Cat=1;
+   when ('Light (1-5)')       Smoking_Cat=2;
+   when ('Moderate (6-15)')   Smoking_Cat=3;
+   when ('Heavy (16-25)')     Smoking_Cat=4;
+   when ('Very Heavy (> 25)') Smoking_Cat=5;
+   otherwise                  Smoking_Cat=.;
+end;
+run;
+
+data Heart ;
+set sashelp.heart;
+select  ;
+   when (Smoking_Status='Non-smoker')        PREMAMT=0;
+   when (Smoking_Status='Light (1-5)')       PREMAMT=200;
+   when (Smoking_Status='Moderate (6-15)')   PREMAMT=300;
+   when (Smoking_Status='Heavy (16-25)')     PREMAMT=400;
+   when (Smoking_Status='Very Heavy (> 25)') PREMAMT=500;
+   otherwise                  PREMAMT=.;
+end;
+run;
+
+
+data Heart_type2 ;
+set sashelp.heart;
+select ;
+   when (sex='Female')        Smoking_Cat=1;
+   when (Height > 50 )        Smoking_Cat=2;
+   when (Weight >120)         Smoking_Cat=3;
+   otherwise                  Smoking_Cat=.;
+end;
+run;
+
+/*INPUT AND PUT*/
+
+data club1;
+   input idno name $ startwght date : date7.;
+   put name 'on ' date mmddyy8. ' weighs '
+       startwght  '.' idno= 32-40;
+   datalines;
+032 David 180 25nov99
+049 Amelia 145 25nov99
+219 Alan 210 12nov99
+;
+RUN;
+
+/*OUTPUT AND DELETE*/
+
+data club2;
+   input idno name $ startwght date : date7.;
+   datalines;
+032 David 180 25nov99
+049 Amelia 145 25nov99
+219 Alan 210 12nov99
+042 David 180 25nov99
+059 Amelia 145 25nov99
+269 Alan 210 12nov99
+;
+RUN;
+
+DATA FIN1 FIN2 FIN3;
+SET CLUB2;
+IF IDNO LT 50 THEN OUTPUT FIN1;
+ELSE IF IDNO GE 50  AND IDNO LT 200 THEN OUTPUT FIN2;
+ELSE OUTPUT FIN3;
+RUN;
+
+DATA FF ;
+SET CLUB2;
+/* IF IDNO LT 50 THEN OUTPUT; */
+IF IDNO LT 50 THEN DELETE;
+RUN;
+
+ 
+
+data _null_ ;
+
+put @15 'Report Title' OVERPRINT
+    @15 '____________'
+    @5 8*'*';
+    
+run;
+
+data listdata ;
+infile   '/home/u36424593/Files/listdata.txt'  ;
+input id name $ age ;
+put _infile_;
+a=_infile_;
+run;
+
+
+data _null_;
+   file print n=ps notitles header=hd;
+
+   do i = 1 to 80 by 20;
+      do j = 1 to ceil(num_students/4);
+         set sashelp.class nobs=num_students;
+         put #(j+3) @i name $8. '-' +1 weight 5.1;
+      end;
+   end;
+   stop;
+
+hd:
+   put @26 'Student Weight in Pounds' / @26 24*'-';
+   return;
+run;
+
+ 
+  /*PUT- writing the data to a text file */
+data _null_; 
+set sashelp.shoes;
+ file '/home/u36424593/outfile/test4.txt';
+ put 15*'----';
+ put _all_; /* useful to check values during input */
+run; 
+
+data _null_; 
+set sashelp.shoes;
+ file '/home/u36424593/outfile/test5.txt';
+
+ put @5 Region 3. @30 Product ;
+run; 
+
+data _null_; 
+set sashelp.shoes;
+by region;
+ file '/home/u36424593/outfile/test6.txt';
+ if first.region then do;
+ put 
+ @1 'Region'    @30 'Product'  /
+ @1 '---------' @30 '---------------';
+ end;
+ put @5 Region 3. @30 Product ;
+run; 
+

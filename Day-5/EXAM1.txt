@@ -1,0 +1,132 @@
+
+SAS 9.4 Base Programming – Performance-based Exam
+Practical Programming Questions:
+
+Project 1:
+This project will use data set sashelp.shoes.
+Write a SAS program that will:
+• Read sashelp.shoes as input.
+• Create the SAS data set work.sortedshoes.
+• Sort the sashelp.shoes data set:
+o First by variable product in descending order.
+o Second by variable sales in ascending order.
+Run the program and answer the following questions:
+Question 1: What is the value of the product variable in observation 148?
+Answer: xxxxx
+Question 2: What is the value of the Region variable in observation 130?
+Answer: xxxxx
+
+Project 2:
+This project will use the data set sashelp.shoes.
+Write a SAS program that will:
+• Read sashelp.shoes as input.
+• Create a new SAS data set, work.shoerange.
+• Create a new character variable SalesRange that will be used to categorize the observations into
+three groups.
+• Set the value of SalesRange to the following:
+o Lower when Sales are less than $100,000.
+o Middle when Sales are between $100,000 and $200,000, inclusively.
+o Upper when Sales are above $200,000.
+Run the program, then use additional SAS procedures to answer the following questions:
+Question 3: How many observations are classified into the “Lower” group? 
+Answer: xxxxx
+Question 4: What is the mean value of the Sales variable for observations in the “Middle” group? Round
+your answer to the nearest whole number.
+Answer: xxxxx
+
+Project 3:
+This project will work with the following program:
+data work.lowchol work.highchol;
+ set sashelp.heart;
+ if cholesterol lt 200 output work.lowchol;
+ if cholesterol ge 200 output work.highchol;
+ if cholesterol is missing output work.misschol;
+run;
+This program is intended to:
+• Divide the observations of sashelp.heart into three data sets, work.highchol, work.lowchol, and
+work.misschol
+• Only observations with cholesterol below 200 should be in the work.lowchol data set.
+• Only Observations with cholesterol that is 200 and above should be in the work.highchol data
+set.
+• Observations with missing cholesterol values should only be in the work.misschol data set.
+Fix the errors in the above program. There may be multiple errors in the program. Errors may be syntax
+errors, program structure errors, or logic errors. In the case of logic errors, the program may not
+produce an error in the log.
+After fixing all of the errors in the program, answer the following questions:
+Question 5: How many observations are in the work.highchol data set?
+Answer: xxxxx
+Question 6: How many observations are in the work.lowchol data set?
+Answer: xxxxx
+
+Standard Questions:
+Question 7:
+The following SAS program is submitted:
+data WORK.TEMP;
+Char1='0123456789';
+Char2=substr(Char1,3,4);
+ run;
+What is the value of Char2?
+A. 23
+B. 34
+C. 345
+D. 2345
+Answer: xxxxx
+
+Question 8:
+The following SAS program is submitted:
+proc format;
+value score 1 - 50 = 'Fail'
+ 51 - 100 = 'Pass';
+run;
+Which one of the following PRINT procedure steps correctly applies the format?
+A. proc print data = SASUSER.CLASS;
+var test;
+format test score;
+ run;
+B. proc print data = SASUSER.CLASS;
+var test;
+format test score.;
+ run;
+C. proc print data = SASUSER.CLASS format = score;
+var test;
+ run;
+D. proc print data = SASUSER.CLASS format = score.;
+var test;
+ run;
+Answer: xxxxx
+
+Question 9:
+Given the SAS data set WORK.ONE:
+Revenue2008 Revenue2009 Revenue2010
+----------- ----------- -----------
+1.2 1.6 2.0
+The following SAS program is submitted:
+data WORK.TWO;
+set WORK.ONE;
+Total=sum(of Rev:);
+run;
+What value will SAS assign to Total?
+A) 3
+B) 1.6
+C) 4.8
+D) The program fails to execute due to errors.
+Answer: xxxxx
+
+Question 10:
+Given the SAS data set WORK.INPUT:
+Var1 Var2
+------ -------
+A one
+A two
+B three
+C four
+A five
+The following SAS program is submitted:
+data WORK.ONE WORK.TWO;
+set WORK.INPUT;
+if Var1='A' then output WORK.ONE;
+output;
+run;
+How many observations will be in data set WORK.ONE?
+Enter your numeric answer in the space below.
+Answer: xxxxx
